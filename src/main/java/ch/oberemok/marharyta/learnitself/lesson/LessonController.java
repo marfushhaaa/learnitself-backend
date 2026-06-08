@@ -2,6 +2,9 @@ package ch.oberemok.marharyta.learnitself.lesson;
 
 import ch.oberemok.marharyta.learnitself.base.MessageResponse;
 import ch.oberemok.marharyta.learnitself.course.Course;
+import ch.oberemok.marharyta.learnitself.progress.LessonProgress;
+import ch.oberemok.marharyta.learnitself.progress.LessonProgressService;
+import ch.oberemok.marharyta.learnitself.progress.Status;
 import ch.oberemok.marharyta.learnitself.security.Roles;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,9 +27,11 @@ import java.util.List;
 @Tag(name = "Lessons", description = "Lesson management operations")
 public class LessonController {
     private final LessonService lessonService;
+    private final LessonProgressService lessonProgressService;
 
-    public LessonController(LessonService lessonService) {
+    public LessonController(LessonService lessonService, LessonProgressService lessonProgressService) {
         this.lessonService = lessonService;
+        this.lessonProgressService = lessonProgressService;
     }
 
     @GetMapping("api/courses/{courseId}/lessons")
@@ -89,17 +94,15 @@ public class LessonController {
     }
 
     // Change lesson-status (kanban)
-    /*
     @PatchMapping("api/courses/{courseId}/lessons/{id}/status")
     @RolesAllowed(Roles.Read)
     @Operation(summary = "Update lesson status (Kanban)")
     @ApiResponse(responseCode = "200", description = "Status successfully updated")
-    public ResponseEntity<LernFortschritt> updateStatus(
+    public ResponseEntity<LessonProgress> updateStatus(
             @PathVariable Long courseId,
             @PathVariable Long id,
-            @RequestParam LernStatus status,
+            @RequestParam Status status,
             Authentication authentication) {
-        return ResponseEntity.ok(lernFortschrittService.updateStatus(id, status, authentication.getName()));
+        return ResponseEntity.ok(lessonProgressService.updateStatus(id, status, authentication.getName()));
     }
-    */
 }

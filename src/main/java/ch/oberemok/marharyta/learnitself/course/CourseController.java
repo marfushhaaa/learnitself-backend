@@ -3,6 +3,7 @@ package ch.oberemok.marharyta.learnitself.course;
 import ch.oberemok.marharyta.learnitself.base.MessageResponse;
 import ch.oberemok.marharyta.learnitself.category.Category;
 import ch.oberemok.marharyta.learnitself.category.CategoryRepository;
+import ch.oberemok.marharyta.learnitself.progress.LessonProgressService;
 import ch.oberemok.marharyta.learnitself.security.Roles;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,6 +17,7 @@ import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +30,12 @@ import java.util.List;
 public class CourseController {
     private final CourseService courseService;
     private final CategoryRepository categoryRepository;
+    private final LessonProgressService lessonProgressService;
 
-    public CourseController(CourseService courseService, CategoryRepository categoryRepository) {
+    public CourseController(CourseService courseService, CategoryRepository categoryRepository, LessonProgressService lessonProgressService) {
         this.courseService = courseService;
         this.categoryRepository = categoryRepository;
+        this.lessonProgressService = lessonProgressService;
     }
 
     @PostMapping("api/courses")
@@ -114,24 +118,13 @@ public class CourseController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
-
-    /**
-     * In plans
-     */
-    /*
-    @PostMapping("api/courses/{id}/enroll")
-    @RolesAllowed(Roles.Read)
-    public ResponseEntity<MessageResponse> enrollCourse(@PathVariable @NonNull Long id) {
-        // TODO: enrollmentService.enroll(id, authentication)
-        return ResponseEntity.ok(new MessageResponse("Enrolled in course " + id));
-    }
-
-    //
     @GetMapping("api/courses/{id}/progress")
     @RolesAllowed(Roles.Read)
-    public ResponseEntity<Double> getCourseProgress(@PathVariable @NonNull Long id) {
-        // TODO: fortschrittService.getProgress(id, authentication)
-        return ResponseEntity.ok(0.0);
-    }*/
+    @Operation(summary = "Get course progress in percent")
+    @ApiResponse(responseCode = "200", description = "Progress successfully retrieved")
+    public ResponseEntity<Double> getProgress(
+            @PathVariable Long id,
+            Authentication authentication) {
+        return ResponseEntity.ok(lessonProgressService.getCourseProgress(id, authentication.getName()));
+    }
 }
