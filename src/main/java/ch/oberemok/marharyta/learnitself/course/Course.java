@@ -38,10 +38,9 @@ public class Course {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDate creation_date = LocalDate.now();
 
-    @ManyToOne
-    @JoinColumn(name = "fk_idUsers")
+    @Column(nullable = false)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private Users creator;
+    private String creatorId;
 
     @ManyToOne
     @JoinColumn(name = "fk_idCategory")
