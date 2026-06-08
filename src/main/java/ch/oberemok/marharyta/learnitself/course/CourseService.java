@@ -30,7 +30,7 @@ public class CourseService {
 
     public Course createCourse(Course course) {
         Category category = categoryRepository.findById(course.getCategory().getId())
-                .orElseThrow(() -> new EntityNotFoundException(course.getId(), Users.class));
+                .orElseThrow(() -> new EntityNotFoundException(course.getId(), Category.class));
         course.setCategory(category);
 
         return repository.save(course);

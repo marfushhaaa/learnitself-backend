@@ -38,7 +38,7 @@ public class CourseParticipationService {
         participation.setCourse(course);
         participationRepository.save(participation);
 
-        return new MessageResponse("Successfully participate in course " + courseId);
+        return new MessageResponse("Successfully participate in course " + courseId + ", " + keycloakId);
     }
 
     public MessageResponse leaveCourse(Long courseId, String keycloakId) {
