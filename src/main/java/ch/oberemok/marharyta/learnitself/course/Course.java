@@ -42,6 +42,10 @@ public class Course {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private String creatorId;
 
+    @Column(nullable = false)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    private String creatorUsername = "unknown";
+
     @ManyToOne
     @JoinColumn(name = "fk_idCategory")
     private Category category;

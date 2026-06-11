@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,14 +41,20 @@ public class CourseController {
 
     @PostMapping("api/courses")
     @RolesAllowed(Roles.Read)
-    @Operation(summary = "Post a course", description = "Creates a new course")
+    @Operation(summary = "Create a course", description = "Creates a new course")
     @ApiResponse(responseCode = "201", description = "Course successfully created")
     @ApiResponse(responseCode = "400", description = "Invalid input")
     @ApiResponse(responseCode = "403", description = "Access denied")
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     public ResponseEntity<Course> createCourse(
             @Parameter(description = "Course object to be created", required = true)
-            @Valid @RequestBody Course course)  {
+            @Valid @RequestBody Course course, Authentication authentication)  {
+
+        // Takes the username from keycloak from field "preferred_username"
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        course.setCreatorId(jwt.getSubject());
+        course.setCreatorUsername(jwt.getClaimAsString("preferred_username"));
+
         Course newCourse = courseService.createCourse(course);
         return new ResponseEntity<>(newCourse,HttpStatus.CREATED);
     }
