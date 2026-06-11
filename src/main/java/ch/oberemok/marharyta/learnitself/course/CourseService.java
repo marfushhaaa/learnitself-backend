@@ -4,7 +4,6 @@ import ch.oberemok.marharyta.learnitself.base.MessageResponse;
 import ch.oberemok.marharyta.learnitself.category.Category;
 import ch.oberemok.marharyta.learnitself.category.CategoryRepository;
 import ch.oberemok.marharyta.learnitself.dataaccess.EntityNotFoundException;
-import ch.oberemok.marharyta.learnitself.user.Users;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class CourseService {
 
     public Course getCourse(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id, Users.class));
+                .orElseThrow(() -> new EntityNotFoundException(id, Course.class));
     }
 
     public Course createCourse(Course course) {
